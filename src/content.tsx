@@ -27,17 +27,11 @@ export const getInlineAnchor: PlasmoGetInlineAnchor = async () => {
     // If no shadow root already exist, check if the active element is a message text field
     return root.classList.contains("msg-form__contenteditable") ? root : null;
   } else {
-    console.log("FFF")
-    console.log(root);
-    console.log(shadowroot)
-    console.log(shadowroot.shadowRoot.activeElement)
-    console.log(shadowroot.parentNode)
-    console.log("GGGG")
-
     // If shadow root already exists for the active element, do not create anothe root
     if (shadowroot && shadowroot.parentNode.contains(root)) {
       return null;
     } else {
+      console.log(root)
       // If active element is a new text field, remove the old shadow element and create a new one
       shadowroot.remove();
       return root.classList.contains("msg-form__contenteditable") ? root : null;
@@ -66,7 +60,7 @@ const ExtensionContext: React.FC = () => {
   };
 
   return (
-    <div>
+    <div tabIndex={0}>
       {clicked && <ModalBackground toggle={toggle}/>}
       {clicked && <Modal toggle={toggle} />}
       <AiIcon toggle={toggle} />
