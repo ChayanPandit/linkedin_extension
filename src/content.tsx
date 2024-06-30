@@ -1,97 +1,71 @@
-import cssText from "data-text:~style.css"
-import type { PlasmoCSConfig, PlasmoGetInlineAnchor} from "plasmo"
+import React, { useState, useEffect } from "react";
+import type { PlasmoCSConfig, PlasmoGetInlineAnchor } from "plasmo";
+import cssText from "data-text:~style.css";
+
 import AiIcon from "~features/AiIcon";
-import { useState } from "react";
 import Modal from "~features/Modal";
- 
+import ModalBackground from "~features/ModalBackground";
 
+// Plasmo extension configuration for LinkedIn URLs
 export const config: PlasmoCSConfig = {
-  matches: ["https://*.linkedin.com/*"]
-}
+  matches: ["https://*.linkedin.com/*"],
+};
 
-export const getStyle = () => {
-  const style = document.createElement("style")
-  style.textContent = cssText
-  return style
-}
+// Inject tailwind CSS config into the document
+export const getStyle = (): HTMLStyleElement => {
+  const style = document.createElement("style");
+  style.textContent = cssText;
+  return style;
+};
 
-export const getInlineAnchor: PlasmoGetInlineAnchor = async () =>{
-  
-  const root = document.activeElement;
-  var shadowroot = document.getElementsByTagName("plasmo-csui")[0];
-  // console.log(document.getElementsByTagName("plasmo-csui").length)
+// Determine the inline anchor element for the extension UI
+export const getInlineAnchor: PlasmoGetInlineAnchor = async () => {
+  const root = document.activeElement as HTMLElement;
+  const shadowRoot = document.getElementsByTagName("plasmo-csui")[0];
 
-  if(shadowroot==null )
-  {
-    if ( root.classList.contains('msg-form__contenteditable')) 
-    {
-      // console.log("hiii")
-      return(root);
-    }
-    return null;
-  }
-  else
-  {
-    // console.log(root)
-    if (root.parentNode.contains(shadowroot)) 
-    {
-      // console.log("root has shadow")
+  if (!shadowRoot) {
+    // If no shadow root already exist, check if the active element is a message text field
+    return root.classList.contains("msg-form__contenteditable") ? root : null;
+  } else {
+    // If shadow root already exists for the active element, do not create anothe root
+    if (root.parentNode.contains(shadowRoot)) {
       return null;
-    }
-    else
-    {
-      await shadowroot.remove();
-      // console.log("removed")
-      if( root.classList.contains('msg-form__contenteditable'))
-      {
-        return root;
-      }
-      return null;
+    } else {
+      // If active element is a new text field, remove the old shadow element and create a new one
+      shadowRoot.remove();
+      return root.classList.contains("msg-form__contenteditable") ? root : null;
     }
   }
 };
 
+const ExtensionContext: React.FC = () => {
+  const [clicked, setClicked] = useState<boolean>(false);
 
-const Result = () => {
-
-  const [clicked, setClicked] = useState(false);
-
-  const toggle = ()=>{
-    if( !clicked )
-    {
-      const background = document.createElement("div");
-      background.innerHTML = '<div id="modal-background" style="background-color: black; opacity: 60%; top: 0; left: 0; width: 100%; height: 100%; z-index: 500; position: fixed;"></div>';
-      const shadowroot = document.getElementsByTagName("plasmo-csui")[0];
-      shadowroot.parentNode.parentNode.appendChild(background);
-      setClicked(true);
+  // Apply Tailwind CSS classes to the shadow container to override its default css
+  useEffect(() => {
+    const shadowRootElement = document.getElementsByTagName("plasmo-csui")[0];
+    if (shadowRootElement?.shadowRoot) {
+      const shadowContainer = shadowRootElement.shadowRoot.getElementById("plasmo-shadow-container");
+      
+      if (shadowContainer) {
+        shadowContainer.classList.add("!absolute", "!bottom-0", "!right-0", "!z-auto");
+      }
     }
-    else
-    {
-      const background = document.getElementById("modal-background");
-      background.remove();
-      setClicked(false);
-    }
-  }
+  }, []);
 
-  window.onclick = function(event) {
-    const background = document.getElementById("modal-background");
-    if (background && event.composedPath()[0]==background) 
-    {
-      background.remove();
-      setClicked(false);
-    }
-  }
-  
+  // Toggle the state of the modal (visible/hidden)
+  const toggle = () => {
+    setClicked(!clicked);
+  };
 
   return (
     <div>
-      {clicked && 
-        <Modal toggle={toggle}/>
-      }
-      <AiIcon onClick={toggle}/>
+      {clicked && <ModalBackground toggle={toggle}/>}
+      {clicked && <Modal toggle={toggle} />}
+      <AiIcon toggle={toggle} />
+      
     </div>
-  )
-}
+  );
+};
 
-
-export default Result
+export default ExtensionContext;

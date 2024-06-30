@@ -4,7 +4,7 @@ import "~style.css"
 function IndexPopup() {
   return (
     <div>
-      
+      Hello from popup!
     </div>
   )
 }
