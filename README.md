@@ -7,7 +7,7 @@
 
 
 
-https://github.com/ChayanPandit/linkedin_extension/assets/103516726/1e3a9ceb-2506-4780-ac54-2f7e9340b2e6
+https://github.com/ChayanPandit/linkedin_extension/assets/103516726/09be4358-db9c-4e3f-9404-7136afeb6022
 
 
 
