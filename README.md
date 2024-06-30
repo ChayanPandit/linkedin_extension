@@ -4,7 +4,10 @@
 
 ## Demo video
 
-https://github.com/ChayanPandit/linkedin_extension/assets/103516726/348fa48a-ea34-4b1a-ad47-d75dccef33be
+
+
+
+https://github.com/ChayanPandit/linkedin_extension/assets/103516726/1e3a9ceb-2506-4780-ac54-2f7e9340b2e6
 
 
 
