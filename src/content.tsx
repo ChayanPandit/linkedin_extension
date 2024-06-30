@@ -23,12 +23,14 @@ export const getInlineAnchor: PlasmoGetInlineAnchor = async () => {
   const root = document.activeElement as HTMLElement;
   const shadowRoot = document.getElementsByTagName("plasmo-csui")[0];
 
+  console.log(root);
+
   if (!shadowRoot) {
     // If no shadow root already exist, check if the active element is a message text field
     return root.classList.contains("msg-form__contenteditable") ? root : null;
   } else {
     // If shadow root already exists for the active element, do not create anothe root
-    if (root.parentNode.contains(shadowRoot)) {
+    if (root.parentNode === shadowRoot.parentNode) {
       return null;
     } else {
       // If active element is a new text field, remove the old shadow element and create a new one
@@ -63,7 +65,6 @@ const ExtensionContext: React.FC = () => {
       {clicked && <ModalBackground toggle={toggle}/>}
       {clicked && <Modal toggle={toggle} />}
       <AiIcon toggle={toggle} />
-      
     </div>
   );
 };
