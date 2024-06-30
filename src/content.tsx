@@ -21,20 +21,25 @@ export const getStyle = (): HTMLStyleElement => {
 // Determine the inline anchor element for the extension UI
 export const getInlineAnchor: PlasmoGetInlineAnchor = async () => {
   const root = document.activeElement as HTMLElement;
-  const shadowRoot = document.getElementsByTagName("plasmo-csui")[0];
-
-  console.log(root);
-
-  if (!shadowRoot) {
+  const shadowroot = document.getElementsByTagName("plasmo-csui")[0];
+  
+  if (!shadowroot) {
     // If no shadow root already exist, check if the active element is a message text field
     return root.classList.contains("msg-form__contenteditable") ? root : null;
   } else {
+    console.log("FFF")
+    console.log(root);
+    console.log(shadowroot)
+    console.log(shadowroot.shadowRoot.activeElement)
+    console.log(shadowroot.parentNode)
+    console.log("GGGG")
+
     // If shadow root already exists for the active element, do not create anothe root
-    if (root.parentNode === shadowRoot.parentNode) {
+    if (shadowroot && shadowroot.parentNode.contains(root)) {
       return null;
     } else {
       // If active element is a new text field, remove the old shadow element and create a new one
-      shadowRoot.remove();
+      shadowroot.remove();
       return root.classList.contains("msg-form__contenteditable") ? root : null;
     }
   }
